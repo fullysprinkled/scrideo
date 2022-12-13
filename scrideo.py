@@ -11,14 +11,22 @@ CLI.add_argument(
   "urls",  # name on the CLI - drop the `--` for positional/required parameters
   nargs="*",  # 0 or more values expected => creates a list
   type=str,
-  default=[
-    'https://stackoverflow.com/questions/27792934/get-video-fps-using-ffprobe'
-, 'https://stackoverflow.com/questions/394809/does-python-have-a-ternary-conditional-operator'
-, 'https://hsm.stackexchange.com/questions/15008/how-were-sailing-warships-maneuvered-in-battle-who-coordinated-the-actions-of'
+  default=[ 
+    'https://softwareengineering.stackexchange.com/questions/442777/accessing-enemies-locations-quickly-in-a-2d-game'
+    , 'https://stackoverflow.com/questions/27792934/get-video-fps-using-ffprobe'
+    , 'https://stackoverflow.com/questions/394809/does-python-have-a-ternary-conditional-operator'
+    , 'https://hsm.stackexchange.com/questions/15008/how-were-sailing-warships-maneuvered-in-battle-who-coordinated-the-actions-of'
 ]  # default if nothing is provided
 )
 urls = CLI.parse_args().urls
-urlResponseHtmls = [requests.get(url).content for url in urls]
+
+urlResponseHtmls = []
+for i,url in enumerate(urls):
+    r = requests.get(url)
+    urlResponseHtmls.append(r.content)
+    print('#{} {} [{}]'.format(i,r,url))
+    
+
 
 
 CONTENT_TYPE_DICT = {
@@ -123,10 +131,10 @@ class buildVideo:
         textStart, textEnd = [0,self._contentSettings['slideDuration']]
         vf = ''
         for i,content in enumerate(self._contentSettings['allContent']):
-            fPath = '{}text{}.txt'.format(self._content['soQuestionTitle'],i)
+            fPath = '{}text{}.txt'.format(self._content['topic'],i)
             with open(fPath, 'w') as f:
                 f.write(content)                
-            vf += "drawtext=fontfile='/System/Library/Fonts/Supplemental/Arial.ttf':textfile={}:fontsize={}:fontcolor={}:x={}:y={}:enable='between(t,{},{})',".format(
+            vf += "drawtext=fontfile='/System/Library/Fonts/Supplemental/Arial.ttf':textfile='{}':fontsize={}:fontcolor={}:x={}:y={}:enable='between(t,{},{})',".format(
                     fPath
                     , self._settings['fontSize']
                     , self._settings['fontColor']
@@ -159,7 +167,7 @@ class buildVideo:
             , self._contentSettings['outputPath']
             , vcodec='libx264'
             , vf = vf
-            ,  loglevel="quiet" # remove line to see ffmpeg stdout logs 
+            ,  loglevel="verbose" # remove line to see ffmpeg stdout logs 
             )
         output.run()
 
