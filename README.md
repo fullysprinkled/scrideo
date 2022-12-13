@@ -12,6 +12,11 @@ This can be used from the CLI like so:
 The following example creates 5 videos out of scraped content from stackexchange posts:
 `python3 scrideo.py https://softwareengineering.stackexchange.com/questions/442777/accessing-enemies-locations-quickly-in-a-2d-game https://softwareengineering.stackexchange.com/questions/271567/how-can-i-avoid-tight-coupling-when-practically-every-decision-logic-has-to-chec https://softwareengineering.stackexchange.com/questions/365060/using-observer-pattern-to-selectively-act-on-events https://softwareengineering.stackexchange.com/questions/322448/vba-outlook-quickly-find-subfolder https://hermeneutics.stackexchange.com/questions/80322/did-jesus-correctly-state-the-shema-in-`
 
+It stores each post in a txt file that ffmpeg accesses in the vf filter string constructed by the build() object. 
+See [exampleTexts folder](https://github.com/fullysprinkled/scrideo/tree/main/exampleTexts)
+
+[Video outputs from example here](https://github.com/fullysprinkled/scrideo/tree/main/exampleVideos)
+
 # to do / wip
 - cleanup text formatting: add h/w text wrapping logic that approximates pixels based on font size and video dimensions, chunk long posts to multiple slides 
 - add formatting (title slide text from question, label first post as OP and subsequent slides as answers from community)
