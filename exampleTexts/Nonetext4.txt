@@ -1,0 +1,6 @@
+
+For your purpose you could consider a well known pattern for event programming (Normally for IO purposes), reactor pattern. 
+The idea 
+is to decouple the application specific code from the reactor implementation. 
+Under this pattern you will define a set of functions (h
+andlers) that will be called when an event happens. Its a neat and organize way to handle event oriented programming.

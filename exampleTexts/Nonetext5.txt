@@ -1,0 +1,100 @@
+
+I know this is a relatively old question, however, I wanted to provide a more concrete solution for future readers as that is what I i
+nterpreted the OP was looking for. This should at least be thought-provoking and/or a "point in the 'right' direction". This pseudo-cod
+e solution is based off of the Publish-Subscribe Design Pattern, which sounds like what the OP was describing as the Observer Design Pa
+ttern (a common misconception).
+/// INFRASTRUCTURE ///
+public static class GameEventManager // Made static for brevity / explanation's 
+sake (can actually be constructed in any preferred way)
+{
+    private static readonly Dictionary<Type, IEventHandler> event_handler_map
+s = new Dictionary<Type, IEventHandler>();
+    public static void subscribe_to_event<TEvent>(IEventHandler event_handler)
+    {
+       
+ // various guard clauses (null, invalid, duplicate, etc.)
+        event_handler_maps.Add(typeof(TEvent), event_handler);
+    }
+    pub
+lic static void publish_event<TEvent>(TEvent @event)
+        where TEvent : IEvent
+    {
+        // various guard clauses (null, invali
+d, no entry in dictionary, etc.)
+        event_handler_maps[typeof(TEvent)].your_callback_api(@event);
+    }
+}
+public interface IEvent
+
+{
+    //... whatever properties, methods, etc. you may need (could be a marker interface that is cast to the correct type in the event 
+handler ... up to you)
+}
+public interface IEventHandler
+{
+    void your_callback_api(IEvent @event); // We pass in the event object as 
+it will contain any data needed to process the event, you could pass data a variety of different ways
+}
+/// USAGE ///
+public class Play
+erShotArrowEvent : IEvent
+{
+    public PlayerShotArrowEvent(Player player, Arrow arrow)
+    {
+        // ... assign to private fields
+ 
+   }
+}
+public class PlayerShotArrowAtEnemyEventHandler : IEventHandler
+{
+    private Enemy enemy;
+    public PlayerShotArrowAtEnemyEven
+tHandler(Enemy enemy)
+    {
+        // various guard clauses (null, invalid, duplicate, etc.)
+        this.enemy = enemy;
+    }
+    pub
+lic void your_callback_api(IEvent @event)
+    {
+        // various guard clauses (null, invalid, duplicate, etc.)
+        PlayerShotArr
+owEvent data = (PlayerShotArrowEvent)@event; // Not the cleanest, but certainly valid if you know that event is always cast-able to Pla
+yerShotArrowEvent OR you can use whatever is in IEvent (depends on your needs)
+        // various calculations / logic / check vectors 
+or hit boxes
+        if (this.enemy.is_dead())
+        {
+            GameEventManager.publish_event(new EnemyDiedEvent(...));
+        }
+
+        else
+        {
+            GameEventManager.publish_event(new EnemyAggroEvent(...));
+        }
+    }
+}
+public class Player
+{
+ 
+   public void shoot_arrow(Arrow arrow)
+    {
+        // ... whatever calculations are done here / other logic
+        GameEventManager
+.publish_event(new PlayerShotArrowEvent(this, arrow));
+    }
+}
+public class Enemy
+{
+    public Enemy()
+    {
+        GameEventManager.s
+ubscribe_to_event<PlayerShotArrowEvent>(new PlayerShotArrowAtEnemyEventHandler(this));
+    }
+}
+You can actually flourish some C# syntax
+ by using lambdas and the Func<...> and/or Action<...> API's if desired or available. I have not ever used Unity so I do not know what 
+is and is not included in the specification / .NET Framework version. I leave that as an exercise to the reader.
+You can have the event
+ handlers call methods directly in the actual game objects to do all of the work so that the handlers stay lightweight and re-usable wh
+ile the actual game objects do all of the heavy lifting. It depends on your architecture and preferences.

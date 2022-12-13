@@ -1,0 +1,5 @@
+
+Another possibility is to try a different approach altogether, such as "Functional Reactive Programming" (FRP). It claims to resolve s
+everal drawbacks of the observer pattern. Having attempted a javafx program with observers and currently doing a FRP-based application,
+ I pretty much agree. There're lots of open source libraries: Sodium FRP, Reactive Banana, Elm, UniRx for Unity; and   lots if informat
+ion eg https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 or free intro chapters from Manning. 
